@@ -4,6 +4,7 @@ import auth from '../../middlewares/auth';
 import validateRequest from '../../middlewares/validateRequest';
 import { AuthController } from './auth.controller';
 import { AuthValidation } from './auth.validation';
+import passport from "../../../config/passport";
 const router = express.Router();
 
 router.post(
@@ -30,9 +31,24 @@ router.post(
   AuthController.resetPassword
 );
 
+router.get(
+  '/google',
+  passport.authenticate('google', { scope: ['email', 'profile'] }),
+);
+
+router.get(
+  '/google/callback',
+  passport.authenticate('google', { session: false }),
+  AuthController.googleSignIn
+);
+
+router.get(
+  "/facebook",
+  passport.authenticate("facebook", { scope: ["email", "public_profile"] }),
+)
 router.post(
   '/change-password',
-  auth(USER_ROLES.ADMIN, USER_ROLES.USER),
+  auth(),
   validateRequest(AuthValidation.createChangePasswordZodSchema),
   AuthController.changePassword
 );

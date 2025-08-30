@@ -10,8 +10,7 @@ import { IUser } from './user.interface';
 import { User } from './user.model';
 
 const createUserToDB = async (payload: Partial<IUser>): Promise<IUser> => {
-  //set role
-  payload.role = USER_ROLES.USER;
+  
   const createUser = await User.create(payload);
   if (!createUser) {
     throw new ApiError(StatusCodes.BAD_REQUEST, 'Failed to create user');
@@ -74,8 +73,40 @@ const updateProfileToDB = async (
   return updateDoc;
 };
 
+
+const setProfessionalDetailsIntoDB = async (
+  user: JwtPayload,
+  payload: Pick<Partial<IUser>, 'proffessional_details'>
+): Promise<Partial<IUser | null>> => {
+  const { id } = user;
+  const isExistUser = await User.findById(id);
+  if (!isExistUser) {
+    throw new ApiError(StatusCodes.BAD_REQUEST, "User doesn't exist!");
+  }
+
+  if(isExistUser?.proffessional_details?.resume_url && isExistUser?.proffessional_details?.resume_url && isExistUser?.proffessional_details?.resume_url !== payload.proffessional_details?.resume_url){
+    unlinkFile(isExistUser.proffessional_details.resume_url);
+
+    
+  }
+
+  if(payload?.proffessional_details?.skills){
+    payload.proffessional_details.skills = (payload.proffessional_details.skills as any as string).split(',');
+  }
+  if(payload?.proffessional_details?.languages){
+    payload.proffessional_details.languages = (payload.proffessional_details.languages as any as string).split(',');
+  }
+
+  const updateDoc = await User.findOneAndUpdate({ _id: id }, payload, {
+    new: true,
+  });
+
+  return updateDoc;
+}
+
 export const UserService = {
   createUserToDB,
   getUserProfileFromDB,
   updateProfileToDB,
+  setProfessionalDetailsIntoDB
 };

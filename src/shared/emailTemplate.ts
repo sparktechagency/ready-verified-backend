@@ -38,7 +38,73 @@ const resetPassword = (values: IResetPassword) => {
   return data;
 };
 
+
+const zoomLinkTemplate = (values: {name:string,email:string,zoomLink:string}) => {
+  const data = {
+    to: values.email,
+    subject: 'Zoom Link',
+    html: `  <body style="margin:0; padding:0; background-color:#f4f7fa; font-family: Arial, sans-serif; color:#333;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f4f7fa; padding:40px 0;">
+      <tr>
+        <td align="center">
+          <table width="600" cellpadding="0" cellspacing="0" style="background:#fff; border-radius:12px; overflow:hidden; box-shadow:0 4px 10px rgba(0,0,0,0.1);">
+            
+            <!-- Header -->
+            <tr>
+              <td style="background-color:#1E88E5; padding:20px; text-align:center;">
+                <img src="https://yourdomain.com/logo.png" alt="Logo" width="120" style="display:block; margin:0 auto;">
+              </td>
+            </tr>
+            
+            <!-- Body -->
+            <tr>
+              <td style="padding:30px 40px;">
+                <h2 style="margin:0; color:#1E88E5; font-size:22px; text-align:center;">Assessment Interview Invitation</h2>
+                
+                <p style="font-size:16px; margin:25px 0 10px;">Hi <strong>${values.name}</strong>,</p>
+                <p style="font-size:15px; line-height:1.6; margin:0 0 20px;">
+                  Congratulations 🎉  
+                  We are pleased to invite you to your upcoming <strong>assessment interview</strong>.
+                </p>
+                
+                <div style="text-align:center; margin:30px 0;">
+                  <a href="${values.zoomLink}" 
+                     style="background-color:#43A047; color:#fff; text-decoration:none; font-size:16px; padding:14px 28px; border-radius:8px; display:inline-block; font-weight:bold;">
+                     Join Interview
+                  </a>
+                </div>
+                
+                <p style="font-size:14px; color:#555; margin-top:20px;">
+                  Please make sure you are available at the scheduled time and have a stable internet connection.  
+                  If you face any issues, feel free to contact us.
+                </p>
+                
+                <p style="font-size:14px; margin-top:20px;">Best regards, <br>
+                  <strong>The ReadyVerified Team</strong></p>
+              </td>
+            </tr>
+            
+            <!-- Footer -->
+            <tr>
+              <td style="background-color:#f0f4f9; padding:20px; text-align:center; font-size:13px; color:#888;">
+                <p style="margin:0;">&copy; 2025 ReadyVerified. All rights reserved.</p>
+                <p style="margin:5px 0 0;">
+                  <a href="https://yourwebsite.com" style="color:#1E88E5; text-decoration:none;">Visit our website</a>
+                </p>
+              </td>
+            </tr>
+            
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>`,
+  };
+  return data;
+}
+
 export const emailTemplate = {
   createAccount,
   resetPassword,
+zoomLinkTemplate
 };

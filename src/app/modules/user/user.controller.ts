@@ -21,7 +21,7 @@ const createUser = catchAsync(
 
 const getUserProfile = catchAsync(async (req: Request, res: Response) => {
   const user = req.user;
-  const result = await UserService.getUserProfileFromDB(user);
+  const result = await UserService.getUserProfileFromDB(user!);
 
   sendResponse(res, {
     success: true,
@@ -41,7 +41,7 @@ const updateProfile = catchAsync(
       image,
       ...req.body,
     };
-    const result = await UserService.updateProfileToDB(user, data);
+    const result = await UserService.updateProfileToDB(user!, data);
 
     sendResponse(res, {
       success: true,
@@ -52,4 +52,23 @@ const updateProfile = catchAsync(
   }
 );
 
-export const UserController = { createUser, getUserProfile, updateProfile };
+
+const setProfessionalDetails = catchAsync(async (req: Request, res: Response) => {
+  const user = req.user;
+  const resume_url = getSingleFilePath(req.files, 'doc');
+  const data = {
+    proffessional_details: {
+      ...req.body,
+      resume_url,
+    }
+  }
+  const result = await UserService.setProfessionalDetailsIntoDB(user!, data);
+  sendResponse(res, {
+    success: true,
+    statusCode: StatusCodes.OK,
+    message: 'Professional details updated successfully',
+    data: result,
+  });
+});
+
+export const UserController = { createUser, getUserProfile, updateProfile, setProfessionalDetails };

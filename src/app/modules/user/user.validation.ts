@@ -6,7 +6,6 @@ const createUserZodSchema = z.object({
     contact: z.string({ required_error: 'Contact is required' }),
     email: z.string({ required_error: 'Email is required' }),
     password: z.string({ required_error: 'Password is required' }),
-    location: z.string({ required_error: 'Location is required' }),
     profile: z.string().optional(),
   }),
 });
@@ -20,7 +19,19 @@ const updateUserZodSchema = z.object({
   image: z.string().optional(),
 });
 
+const setProfessionalDetailsZodSchema = z.object({
+  body: z.object({
+    job_title: z.string().optional(),
+    industry: z.string().optional(),
+    experience: z.string().optional(),
+    linkedin_url: z.string().url().optional(),
+    skills: z.string().optional(),
+    languages: z.string().optional(),
+    resume_url: z.string().optional(),
+  })
+})
 export const UserValidation = {
   createUserZodSchema,
   updateUserZodSchema,
+  setProfessionalDetailsZodSchema
 };

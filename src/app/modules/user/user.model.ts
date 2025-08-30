@@ -23,6 +23,9 @@ const userSchema = new Schema<IUser, UserModal>(
       unique: true,
       lowercase: true,
     },
+    contact: {
+      type: String,
+    },
     password: {
       type: String,
       required: true,
@@ -42,6 +45,48 @@ const userSchema = new Schema<IUser, UserModal>(
       type: Boolean,
       default: false,
     },
+    suffix: {
+      type: String,
+    },
+    street_address: {
+      type: String,
+    },
+    secondary_street_address: {
+      type: String,
+    },
+    city: {
+      type: String,
+    },
+    state: {
+      type: String,
+    },
+    country: {
+      type: String,
+    },
+    zip_code: {
+      type: String,
+    },
+    date_of_birth: {
+      type: Date,
+    },
+    gender: {
+      type: String,
+    },
+    ethic: {
+      type: String,
+    },
+    education: {
+      type: String,
+    },
+    school_name: {
+      type: String,
+    },
+    graduation_year: {
+      type: String,
+    },
+    additional_languages: {
+      type: String,
+    },
     authentication: {
       type: {
         isResetPassword: {
@@ -59,6 +104,21 @@ const userSchema = new Schema<IUser, UserModal>(
       },
       select: 0,
     },
+    subscription: {
+      type: Schema.Types.ObjectId,
+      ref: 'Subscription',
+    },
+    proffessional_details:{
+      type:{
+        job_title: String,
+        industry: String,
+        experience: Number,
+        linkedin_url: String,
+        skills: [String],
+        languages: [String],
+        resume_url: String
+      }
+    }
   },
   { timestamps: true }
 );

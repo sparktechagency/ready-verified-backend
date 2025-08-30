@@ -23,4 +23,25 @@ export default {
     email: process.env.SUPER_ADMIN_EMAIL,
     password: process.env.SUPER_ADMIN_PASSWORD,
   },
+  google:{
+    client_id: process.env.GOOGLE_CLIENT_ID,
+    client_secret: process.env.GOOGLE_CLIENT_SECRET,
+  },
+  facebook:{
+    client_id: process.env.FACEBOOK_CLIENT_ID,
+    client_secret: process.env.FACEBOOK_CLIENT_SECRET
+  },
+  url:{
+    base_url: process.env.BASE_URL,
+    client_url: process.env.FRONTEND_URL
+  },
+  stripe: {
+    secret_key: process.env.STRIPE_API_SECRET,
+    webhook_secret: process.env.WEBHOOK_SECRET
+  },
+  zoom:{
+    client_id: process.env.ZOOM_CLIENT_ID,
+    client_secret: process.env.ZOOM_CLIENT_SECRET,
+    account_id: process.env.ZOOM_ACCOUNT_ID
+  }
 };

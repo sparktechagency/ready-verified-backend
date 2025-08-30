@@ -3,6 +3,8 @@ import { StatusCodes } from 'http-status-codes';
 import catchAsync from '../../../shared/catchAsync';
 import sendResponse from '../../../shared/sendResponse';
 import { AuthService } from './auth.service';
+import { jwtHelper } from '../../../helpers/jwtHelper';
+import config from '../../../config';
 
 const verifyEmail = catchAsync(async (req: Request, res: Response) => {
   const { ...verifyData } = req.body;
@@ -57,7 +59,7 @@ const resetPassword = catchAsync(async (req: Request, res: Response) => {
 const changePassword = catchAsync(async (req: Request, res: Response) => {
   const user = req.user;
   const { ...passwordData } = req.body;
-  await AuthService.changePasswordToDB(user, passwordData);
+  await AuthService.changePasswordToDB(user!, passwordData);
 
   sendResponse(res, {
     success: true,
@@ -66,10 +68,19 @@ const changePassword = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+
+const googleSignIn = catchAsync(async (req: Request, res: Response) => {
+  const user:any = req.user;
+  const token = jwtHelper.createToken({id:user._id,email:user.email,role:user.role},config.jwt.jwt_secret!,config.jwt.jwt_expire_in!);
+
+  res.redirect(`${config.url.client_url}?token=${token}`);
+});
+
 export const AuthController = {
   verifyEmail,
   loginUser,
   forgetPassword,
   resetPassword,
   changePassword,
+  googleSignIn
 };
