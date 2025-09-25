@@ -6,12 +6,12 @@ export enum USER_ROLES {
 }
 
 export enum JOB_LEVEL {
-  ALL = "All",
-  C_LEVEL = "C-Level",
-  VP_LEVEL = "VP-Level",
-  DIRECTOR = "Director",
-  MANAGER = "Manager",
-  NON_MANAGER = "Non-Manager"
+  LEVEL_A = "LEVEL-A",
+  LEVEL_B = "LEVEL-B",
+  LEVEL_C = "LEVEL-C",
+  LEVEL_D = "LEVEL-D",
+  LEVEL_E = "LEVEL-E",
+  LEVEL_F = "LEVEL-F"
 }
 
 export enum USER_BADGE {
@@ -28,4 +28,11 @@ export enum ASSESSMENT_STATUS {
   LINK_SENT = "link_sent",
   APPROVED = "approved",
   REJECTED = "rejected"
+}
+
+
+export enum ASSESSMENT_BADGE {
+  BRONZE = "BRONZE",
+  SILVER = "SILVER",
+  GOLD = "GOLD"
 }

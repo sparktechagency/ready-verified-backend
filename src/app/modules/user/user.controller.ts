@@ -56,6 +56,8 @@ const updateProfile = catchAsync(
 const setProfessionalDetails = catchAsync(async (req: Request, res: Response) => {
   const user = req.user;
   const resume_url = getSingleFilePath(req.files, 'doc');
+  console.log(resume_url);
+  
   const data = {
     proffessional_details: {
       ...req.body,
@@ -71,4 +73,57 @@ const setProfessionalDetails = catchAsync(async (req: Request, res: Response) =>
   });
 });
 
-export const UserController = { createUser, getUserProfile, updateProfile, setProfessionalDetails };
+const getAllUsers = catchAsync(async (req: Request, res: Response) => {
+  const result = await UserService.getAllUserFromDB(req.query);
+  sendResponse(res, {
+    success: true,
+    statusCode: StatusCodes.OK,
+    message: 'All users fetched successfully',
+    data: result.data,
+    pagination: result.pagination,
+  });
+});
+
+const getSingleUser = catchAsync(async (req: Request, res: Response) => {
+  const result = await UserService.getSingleUserFromDB(req.params.id);
+  sendResponse(res, {
+    success: true,
+    statusCode: StatusCodes.OK,
+    message: 'Single user fetched successfully',
+    data: result,
+  });
+});
+
+
+const lockUnlockUser = catchAsync(async (req: Request, res: Response) => {
+  const result = await UserService.lockUnlockUserFromDB(req.params.id);
+  sendResponse(res, {
+    success: true,
+    statusCode: StatusCodes.OK,
+    message: 'User locked/unlocked successfully',
+    data: result,
+  });
+});
+
+
+const getCertificates = catchAsync(async (req: Request, res: Response) => {
+  const result = await UserService.getUserCertificateAndDocumentsFromDB(req.user!);
+  sendResponse(res, {
+    success: true,
+    statusCode: StatusCodes.OK,
+    message: 'Certificates fetched successfully',
+    data: result,
+  });
+});
+
+const getUserCollectionsFromDB = catchAsync(async (req: Request, res: Response) => {
+  const result = await UserService.getUserCollectionsFromDB(req.user!);
+  sendResponse(res, {
+    success: true,
+    statusCode: StatusCodes.OK,
+    message: 'Collections fetched successfully',
+    data: result,
+  });
+})
+
+export const UserController = { createUser, getUserProfile, updateProfile, setProfessionalDetails, getAllUsers, getSingleUser, lockUnlockUser, getCertificates, getUserCollectionsFromDB };

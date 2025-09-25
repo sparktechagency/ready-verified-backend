@@ -81,9 +81,20 @@ const assessmentSchema = new mongoose.Schema<IAssessment,AssessmentModel>({
     },
     badge:{
         type: String,
-        enum: Object.values(USER_BADGE)
     },
     zoomLink:{
+        type: String
+    },
+    cirtificate:{
+        type: String
+    },
+    verificationCode: {
+        type: String
+    },
+    mark:{
+        type: Number,
+    },
+    duration: {
         type: String
     }
 

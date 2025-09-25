@@ -4,6 +4,7 @@ import { User } from "../app/modules/user/user.model";
 import { Subscription } from "../app/modules/subscription/subscription.model";
 import { Package } from "../app/modules/package/package.model";
 import stripe from "../config/stripe";
+import { sendNotification } from "../helpers/notificationHelper";
 
 export const handleSubscriptionCreated = async (event: Stripe.Subscription) => {
     const mongooseSession = await mongoose.startSession();
@@ -64,6 +65,15 @@ export const handleSubscriptionCreated = async (event: Stripe.Subscription) => {
             endDate:endDate,
             price:packageData.price,
         })
+
+
+        sendNotification({
+            title:`${user.name} has subscribed to ${packageData.name}`,
+            message:`${user.name} has subscribed to ${packageData.name}`,
+            path:"user",
+            recievers:[]
+        })
+        
 
         await User.findByIdAndUpdate(user._id,{subscription:newSubscription._id},{session:mongooseSession})
 

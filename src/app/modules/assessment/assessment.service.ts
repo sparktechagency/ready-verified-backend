@@ -11,6 +11,8 @@ import { emailTemplate } from '../../../shared/emailTemplate';
 import { emailHelper } from '../../../helpers/emailHelper';
 import { sendNotification } from '../../../helpers/notificationHelper';
 import { JwtPayload } from 'jsonwebtoken';
+import { generateBadge, generateCirtificate } from '../../../helpers/pdfHelper';
+import config from '../../../config';
 
 const createAssessmentToDB = async (
   payload: Partial<IAssessment>
@@ -20,6 +22,18 @@ const createAssessmentToDB = async (
     throw new ApiError(StatusCodes.NOT_FOUND, "User doesn't exist!");
   }
 
+
+// under 14days assessment
+  const isExistAssessMent = await Assessment.findOne({ user: payload.user,category:payload.category,createdAt:{$lte:new Date(new Date().getTime() - 14 * 24 * 60 * 60 * 1000)} });
+  if (isExistAssessMent) {
+    throw new ApiError(
+      StatusCodes.BAD_REQUEST,
+      'You already have an assessment scheduled. Please wait for 14 days before scheduling another assessment.'
+    );
+  }
+
+  payload.end_time = new Date(new Date(payload.start_time!).getTime() + 30 * 60000);
+  payload.date = new Date(new Date(payload.start_time!));
   const result = await Assessment.create(payload);
 
   if (!result) {
@@ -32,16 +46,16 @@ const createAssessmentToDB = async (
         price_data: {
           currency: 'usd',
           product_data: {
-            name: `Assessment of ${user.name}. 5 assessments and 1 interview`,
+            name: `Assessment of ${user.name}.For 1 assessments and 1 interview`,
           },
-          unit_amount: 450 * 100,
+          unit_amount: 290 * 100,
         },
         quantity: 1,
       },
     ],
     customer_email: user.email,
-    success_url: 'http://localhost:3000/assessment/success',
-    cancel_url: 'http://localhost:3000/assessment/cancel',
+    success_url: `${config.url.client_url}/profile`,
+    cancel_url: `${config.url.client_url}`,
     metadata: { assessmentId: result._id.toString() },
   });
 
@@ -56,6 +70,8 @@ const getAllAssessmentFromDB = async (
   query: Record<string, unknown>,
   user: JwtPayload
 ) => {
+
+  
   const AssessmentQuery = new QueryBuilder(
     Assessment.find([USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN].includes(user.role) ? {isPaid: true} : { status: ASSESSMENT_STATUS.COMPLETED }),
     query
@@ -64,23 +80,29 @@ const getAllAssessmentFromDB = async (
     .filter()
     .paginate();
 
+
+
   const [assessments, paginaion] = await Promise.all([
     AssessmentQuery.modelQuery
       .populate([
         {
           path: 'user',
-          select: 'name email subscription',
+          select: 'name email subscription image',
           populate: {
             path: 'subscription',
             select: 'price',
           },
         },
+        {
+          path:'category',
+          select:'title'
+        }
       ])
-      .sort({ startTime: -1 })
+      .sort()
       .select(
         [USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN].includes(user.role)
           ? ''
-          : 'personal_information level user professional_information other_information'
+          : ''
       )
       .lean(),
     AssessmentQuery.getPaginationInfo(),
@@ -88,12 +110,10 @@ const getAllAssessmentFromDB = async (
 
   
 
+  
+
   return {
-    assessments: assessments.sort((a: any, b: any) => {
-      const priceA = a?.user?.subscription?.price || 0;
-      const priceB = b?.user?.subscription?.price || 0;
-      return priceB - priceA;
-    }),
+    assessments: assessments,
 
     paginaion,
   };
@@ -104,7 +124,27 @@ const getSingleAssessmentFromDB = async (
   user: JwtPayload
 ): Promise<IAssessment | null> => {
   if ([USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN].includes(user.role)) {
-    const result = await Assessment.findById(id);
+    const result = await Assessment.findById(id).populate([
+      {
+        path: 'user',
+        select: 'name email subscription image',
+        populate: {
+          path: 'subscription',
+          select: 'price',
+        },
+      },
+      {
+        path: 'category',
+        select: 'title',
+      },
+      {
+        path: 'user',
+        select: 'name email subscription image',
+        populate: {
+          path: 'subscription',
+          select: 'price',
+        },
+      },]);
     return result;
   }
   const result = await Assessment.findById(id).select(
@@ -117,23 +157,29 @@ const updateAssessmentToDB = async (
   id: string,
   payload: Partial<IAssessment>
 ): Promise<IAssessment | null> => {
+ 
   const result = await Assessment.findOneAndUpdate({ _id: id }, payload, {
     new: true,
   });
+
+ 
   return result;
 };
 
 const deleteAssessmentFromDB = async (
   id: string
 ): Promise<IAssessment | null> => {
-  const result = await Assessment.findByIdAndDelete(id);
+  const result = await Assessment.findByIdAndUpdate(
+    
+  )
   return result;
 };
 
 const changeStatusIntoDB = async (
   id: string,
-  status: ASSESSMENT_STATUS
-): Promise<IAssessment | null> => {
+  status: ASSESSMENT_STATUS,
+  mark?: number
+) => {
   if (
     [
       ASSESSMENT_STATUS.CANCELLED,
@@ -154,6 +200,12 @@ const changeStatusIntoDB = async (
     status !== ASSESSMENT_STATUS.COMPLETED
   ) {
     throw new ApiError(StatusCodes.BAD_REQUEST, "You can't change the status");
+  }
+
+  if(status == ASSESSMENT_STATUS.COMPLETED){
+    const result = await generateCirtificate(assessment,mark)
+    // const badge = await generateBadge((assessment as any)._id)
+    return result
   }
 
   const result = await Assessment.findOneAndUpdate(
@@ -201,6 +253,11 @@ const sendZoomMeetingLinkToAllAssessments = async () => {
       refernceId: assessment._id,
     });
   }
+};
+
+
+const cirtificateVerificationUrl = async (id: string) => {
+  const assessment = await Assessment.findById(id)
 };
 
 export const AssessmentService = {

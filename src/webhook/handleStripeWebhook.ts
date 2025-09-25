@@ -5,6 +5,7 @@ import { handleSubscriptionCreated } from "../handlers/handleSubscriptionCreated
 import config from "../config"
 import stripe from "../config/stripe"
 import { handleAssessmentCheckout } from "../handlers/handleAssessmentCheckout"
+import { handleTemplateCheckout } from "../handlers/handleTemplateCheckout"
 
 export const handleStripeWebhook = async (req:Request,res:Response) => {
     const sig = req.headers['stripe-signature']
@@ -15,9 +16,13 @@ export const handleStripeWebhook = async (req:Request,res:Response) => {
         
         case "checkout.session.completed":
             const object = event.data.object;
+            
             const metadata = object.metadata;
             if(metadata?.assessmentId){
                 await handleAssessmentCheckout(object as Stripe.Checkout.Session)
+            }
+            else if(metadata?.order_id){
+                await handleTemplateCheckout(metadata.order_id,(object as any).payment_intent)
             }
             break;
 

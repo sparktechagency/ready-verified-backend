@@ -38,6 +38,20 @@ router
   .post(
     validateRequest(UserValidation.createUserZodSchema),
     UserController.createUser
-  );
+  )
+  .get(auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN), UserController.getAllUsers);
+
+
+router.route("/certificate")
+.get(auth(),UserController.getCertificates)
+
+router.route("/collection")
+.get(auth(),UserController.getUserCollectionsFromDB)
+
+router
+  .route('/:id')
+  .get(auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN), UserController.getSingleUser)
+  .patch(
+    auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN),UserController.lockUnlockUser)
 
 export const UserRoutes = router;

@@ -17,7 +17,10 @@ app.use(Morgan.errorHandler);
 app.post("/api/webhook",express.raw({type: "application/json"}), handleStripeWebhook);
 
 //body parser
-app.use(cors());
+app.use(cors({
+  origin:["http://10.10.7.95:3000","http://10.10.7.95:3001","http://localhost:4003","http://localhost:3000","http://localhost:3001","https://ready-verified-client.vercel.app","http://92.205.234.176:4003"],
+  credentials: true
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(
@@ -31,7 +34,9 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 //file retrieve
+
 app.use(express.static('uploads'));
+app.use('/asset',express.static('asset'));
 
 //router
 app.use('/api/v1', router);

@@ -6,7 +6,8 @@ export type ICategory = {
     questions:{
         question: string,
         type:"boolean" | "plain",
-    }[]
+    }[],
+    status:"active" | "deleted"
 }
 
 export type CategoryModel = Model<ICategory>

@@ -6,6 +6,8 @@ import { getSingleFilePath } from "../../../shared/getFilePath";
 
 const createCategory = catchAsync(async (req: Request, res: Response) => {
     const icon = getSingleFilePath(req.files, 'image');
+    console.log(icon);
+    
     req.body.icon = icon
         const result = await AsCategoryService.createCategoryToDB(req.body);
     
@@ -46,6 +48,8 @@ const getSingleCategory = catchAsync(async (req: Request, res: Response) => {
 const updateCategory = catchAsync(async (req: Request, res: Response) => {
         const id = req.params.id;
         const icon = getSingleFilePath(req.files, 'image');
+        console.log(icon);
+        
         if(icon){
             req.body.icon = icon
         }

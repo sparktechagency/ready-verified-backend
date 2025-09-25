@@ -16,10 +16,11 @@ import cryptoToken from '../../../util/cryptoToken';
 import generateOTP from '../../../util/generateOTP';
 import { ResetToken } from '../resetToken/resetToken.model';
 import { User } from '../user/user.model';
+import { USER_ROLES } from '../../../enums/user';
 
 //login
 const loginUserFromDB = async (payload: ILoginData) => {
-  const { email, password } = payload;
+  const { email, password,isAdmin } = payload;
   const isExistUser = await User.findOne({ email }).select('+password');
   if (!isExistUser) {
     throw new ApiError(StatusCodes.BAD_REQUEST, "User doesn't exist!");
@@ -47,6 +48,10 @@ const loginUserFromDB = async (payload: ILoginData) => {
     !(await User.isMatchPassword(password, isExistUser.password))
   ) {
     throw new ApiError(StatusCodes.BAD_REQUEST, 'Password is incorrect!');
+  }
+
+  if(isAdmin && ![USER_ROLES.SUPER_ADMIN,USER_ROLES.ADMIN].includes(isExistUser.role)){
+    throw new ApiError(StatusCodes.BAD_REQUEST, 'You do not have permission to access this content');
   }
 
   //create token

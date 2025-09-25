@@ -34,7 +34,7 @@ const userSchema = new Schema<IUser, UserModal>(
     },
     image: {
       type: String,
-      default: 'https://i.ibb.co/z5YHLV9/profile.png',
+      default: '/asset/avtar.jpg',
     },
     status: {
       type: String,
@@ -85,7 +85,7 @@ const userSchema = new Schema<IUser, UserModal>(
       type: String,
     },
     additional_languages: {
-      type: String,
+      type: [String],
     },
     authentication: {
       type: {
@@ -104,20 +104,32 @@ const userSchema = new Schema<IUser, UserModal>(
       },
       select: 0,
     },
+    experience: {
+      type: String
+    },
     subscription: {
       type: Schema.Types.ObjectId,
       ref: 'Subscription',
+    },
+    asessment_complete:{
+      type: Number,
+      default: 0
     },
     proffessional_details:{
       type:{
         job_title: String,
         industry: String,
-        experience: Number,
+        experience: String,
         linkedin_url: String,
         skills: [String],
         languages: [String],
         resume_url: String
       }
+    },
+    tier_resume_taken: {
+      type: Number,
+      default: 0,
+      select: 0
     }
   },
   { timestamps: true }

@@ -11,7 +11,7 @@ const createCategoryToDB = async (data:ICategory)=>{
 }
 
 const getAllCategoryFromDB = async ()=>{
-    const result = await Category.find({});
+    const result = await Category.find({status:{$ne:"deleted"}});
     return result;
 }
 
@@ -21,7 +21,6 @@ const updateCategoryToDB = async (id:string,data:ICategory)=>{
         throw new ApiError(StatusCodes.NOT_FOUND,'Category not found');
     }
     if(data.icon){
-        isExist.icon = data.icon
         unlinkFile(isExist.icon)
     }
     if(data.questions){
@@ -37,7 +36,7 @@ const getSingleCategoryFromDB = async (id:string)=>{
 }
 
 const deleteCategoryFromDB = async (id:string)=>{
-    const result = await Category.findByIdAndDelete(id);
+    const result = await Category.findByIdAndUpdate(id,{status:"deleted"},{new:true});
     unlinkFile(result!.icon)
     return result;
 }

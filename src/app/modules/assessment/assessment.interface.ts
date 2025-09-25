@@ -44,8 +44,12 @@ export type IAssessment = {
     status:ASSESSMENT_STATUS
     user:Types.ObjectId;
     level:JOB_LEVEL;
-    badge:USER_BADGE;
+    badge:string;
     zoomLink?:string;
+    cirtificate?:string,
+    verificationCode?:string,
+    mark?:number,
+    duration?:string
 
 }
 

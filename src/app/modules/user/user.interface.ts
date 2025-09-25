@@ -19,12 +19,14 @@ export type IUser = {
   country?: string;
   zip_code?: string;
   date_of_birth?: Date;
+  experience?: string;
   gender?: string;
   ethic?: string;
   education?: string;
   school_name?: string;
   graduation_year?: string;
-  additional_languages?: string;
+  additional_languages?: string[]
+  asessment_complete?: number;
   authentication?: {
     isResetPassword: boolean;
     oneTimeCode: number;
@@ -35,12 +37,14 @@ export type IUser = {
   proffessional_details?: {
     job_title: string;
     industry: string;
-    experience:number;
+    experience:string;
     linkedin_url?: string;
     skills: string[];
     languages: string[];
     resume_url: string;
   },
+
+  tier_resume_taken?: number;
   
 };
 

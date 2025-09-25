@@ -82,7 +82,9 @@ const fileUploadHandler = () => {
         );
       }
     } else if (file.fieldname === 'doc') {
-      if (file.mimetype === 'application/pdf') {
+      // console.log(file.mimetype);
+      
+      if (["application/vnd.openxmlformats-officedocument.wordprocessingml.document", "application/pdf"].includes(file.mimetype)) {
         cb(null, true);
       } else {
         cb(new ApiError(StatusCodes.BAD_REQUEST, 'Only pdf supported'));

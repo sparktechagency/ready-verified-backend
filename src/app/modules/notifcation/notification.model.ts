@@ -7,7 +7,7 @@ const notificationSchema = new Schema<INotification,NotificationModel>(
     message: { type: String, required: true },
     recievers: [{ type: Schema.Types.ObjectId, ref: 'User' }],
     readers: [{ type: Schema.Types.ObjectId, ref: 'User' }],
-    path: { type: String, required: true,enum: ['polling','agent'] },
+    path: { type: String, required: true,enum: ["assessment", "user"] },
     refernceId: { type: Schema.Types.ObjectId },
   },
   {

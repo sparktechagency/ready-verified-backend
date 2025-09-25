@@ -1,3 +1,4 @@
+import config from '../config';
 import { ICreateAccount, IResetPassword } from '../types/emailTamplate';
 
 const createAccount = (values: ICreateAccount) => {
@@ -52,7 +53,7 @@ const zoomLinkTemplate = (values: {name:string,email:string,zoomLink:string}) =>
             <!-- Header -->
             <tr>
               <td style="background-color:#1E88E5; padding:20px; text-align:center;">
-                <img src="https://yourdomain.com/logo.png" alt="Logo" width="120" style="display:block; margin:0 auto;">
+                <img src="https://res.cloudinary.com/dkbcx9amc/image/upload/v1757074657/Group_1000007672_oxlc75.png" alt="Logo" width="120" style="display:block; margin:0 auto;">
               </td>
             </tr>
             
@@ -103,8 +104,81 @@ const zoomLinkTemplate = (values: {name:string,email:string,zoomLink:string}) =>
   return data;
 }
 
+
+const fileSentTemplate = (values:{name:string,file:string,email:string}) => {
+
+  const fileLink = `${config.url.base_url}/api/v1/order${values.file}`
+
+  return {
+    to: values.email,
+    subject: 'Your Template is Ready',
+    html: `  <body style="margin:0; padding:0; font-family: Arial, sans-serif; background-color:#f8f9fa;">
+    <table align="center" border="0" cellpadding="0" cellspacing="0" width="600" 
+      style="border-collapse: collapse; background-color: #ffffff; border-radius: 8px; box-shadow: 0px 4px 10px rgba(0,0,0,0.1);">
+      
+      <!-- Logo -->
+      <tr>
+        <td align="center" style="padding: 20px;">
+          <img src="https://res.cloudinary.com/dkbcx9amc/image/upload/v1757074657/Group_1000007672_oxlc75.png" alt="Ready Verified" width="180" style="display:block;">
+        </td>
+      </tr>
+
+      <!-- Title -->
+      <tr>
+        <td align="center" style="padding: 0 20px;">
+          <h2 style="color:#004080; margin:0;">Thank You for Your Purchase!</h2>
+        </td>
+      </tr>
+
+      <!-- Message -->
+      <tr>
+        <td style="padding: 20px;">
+          <p style="font-size:16px; color:#555555; margin:0 0 15px 0;">
+            Hi ${values.name},
+          </p>
+          <p style="font-size:16px; color:#555555; margin:0 0 15px 0;">
+            Thank you for purchasing from <strong style="color:#2E9C45;">Ready Verified</strong>.  
+            Your digital file is ready for download. Please use the button below:
+          </p>
+
+          <!-- Download Button -->
+          <p style="text-align:center; margin:30px 0;">
+            <a href="${fileLink}" 
+              style="display:inline-block; background:#0066CC; color:#ffffff; text-decoration:none; 
+              padding:12px 20px; border-radius:6px; font-weight:bold;" download>
+              Download Your File
+            </a>
+          </p>
+
+          <!-- Backup Link -->
+          <p style="font-size:14px; color:#555555; margin:0 0 15px 0;">
+            If the button does not work, copy and paste this link into your browser:<br>
+            <a href="${fileLink}" style="color:#0066CC;" download>${fileLink}</a>
+          </p>
+
+          <!-- Support -->
+          <p style="font-size:14px; color:#555555; margin:0;">
+            If you have any questions, just reply to this email.  
+            We’re always happy to help!
+          </p>
+        </td>
+      </tr>
+
+      <!-- Footer -->
+      <tr>
+        <td align="center" style="padding: 20px; font-size:13px; color:#888888; background:#f1f1f1; border-radius: 0 0 8px 8px;">
+          &copy; 2025 <span style="color:#2E9C45;">Ready Verified</span>. All rights reserved.
+        </td>
+      </tr>
+    </table>
+  </body>`
+  }
+  
+}
+
 export const emailTemplate = {
   createAccount,
   resetPassword,
-zoomLinkTemplate
+zoomLinkTemplate,
+fileSentTemplate
 };

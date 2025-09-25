@@ -37,6 +37,7 @@
   "dependencies": {
     "axios": "^1.11.0",
     "bcrypt": "^5.1.1",
+    "canvas": "^3.2.0",
     "colors": "^1.4.0",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
@@ -54,6 +55,10 @@
     "passport": "^0.7.0",
     "passport-facebook": "^3.0.0",
     "passport-google-oauth20": "^2.0.0",
+    "pdf-poppler": "^0.2.1",
+    "pdf2pic": "^3.2.0",
+    "pdfjs-dist": "^5.4.149",
+    "puppeteer": "^24.19.0",
     "socket.io": "^4.7.5",
     "stripe": "^18.4.0",
     "winston": "^3.13.0",

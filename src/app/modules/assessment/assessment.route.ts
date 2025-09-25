@@ -13,7 +13,7 @@ router.route('/')
 
 router.patch('/change-status/:id',auth(USER_ROLES.ADMIN,USER_ROLES.SUPER_ADMIN),validateRequest(AssessmentValidation.changeStatusZodSchema),AssessmentController.changeStatus)
 router.route('/:id')
-    .patch(auth(),fileUploadHandler(),AssessmentController.updateAssessment)
+    .patch(auth(USER_ROLES.ADMIN,USER_ROLES.SUPER_ADMIN),fileUploadHandler(),validateRequest(AssessmentValidation.updateAssessmentZodSchema),AssessmentController.updateAssessment)
     .delete(auth(USER_ROLES.ADMIN,USER_ROLES.SUPER_ADMIN),AssessmentController.deleteAssessment)
     .get(auth(),AssessmentController.getAssessment)
 

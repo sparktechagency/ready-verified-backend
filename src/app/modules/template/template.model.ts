@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import { ITemplate, TemplateModel } from "./template.interface";
 
 const templateSchema = new mongoose.Schema<ITemplate,TemplateModel>({
-    image: {
+    file: {
         type: String,
         required: true
     },
@@ -12,12 +12,33 @@ const templateSchema = new mongoose.Schema<ITemplate,TemplateModel>({
     },
     type: {
         type: String,
-        enum: ["resume", "cover-letter"],
+        enum: ["resume", "cover-letter","guide"],
         required: true
     },
     price: {
         type: Number,
         required: true
+    },
+    description: {
+        type: String,
+    },
+    status: {
+        type: String,
+        enum: ["active", "inactive"],
+        default: "active"
+    },
+    thumbnail: {
+        type: String
+    },
+    features: {
+        type: [String]
+    },
+    isPremium: {
+        type: Boolean,
+        default: false
+    },
+    tags: {
+        type: [String]
     }
 },{
     timestamps: true

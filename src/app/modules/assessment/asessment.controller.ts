@@ -16,7 +16,7 @@ const createAssessment = catchAsync(async (req:Request,res:Response)=>{
         qna:JSON.parse(data.qna),
         user:(req.user as any)!.id,
     }
-
+    
     const result = await AssessmentService.createAssessmentToDB({
         ...body,
         professional_information:{
@@ -24,6 +24,7 @@ const createAssessment = catchAsync(async (req:Request,res:Response)=>{
             resume_url:resume_url!
         }
     })
+
     sendResponse(res,{
         statusCode:200,
         message:"Assessment created successfully",
@@ -58,9 +59,13 @@ const updateAssessment = catchAsync(async (req:Request,res:Response)=>{
         req.body.qna = JSON.parse(data.qna)
     }
     const resume_url = getSingleFilePath(req.files,'doc')
+    console.log(resume_url);
+    
     if(resume_url){
-        req.body.professional_information.resume_url = resume_url
+        req.body.cirtificate = resume_url
     }
+    // console.log(req.body);
+    
     const result = await AssessmentService.updateAssessmentToDB(req.params.id,req.body)
     sendResponse(res,{
         statusCode:200,
@@ -81,7 +86,7 @@ const deleteAssessment = catchAsync(async (req:Request,res:Response)=>{
 })
 
 const changeStatus = catchAsync(async (req:Request,res:Response)=>{
-    const result = await AssessmentService.changeStatusIntoDB(req.params.id,req.body.status);
+    const result = await AssessmentService.changeStatusIntoDB(req.params.id,req.body.status,req.body?.mark);
     sendResponse(res,{
         statusCode:200,
         message:"Status changed successfully",

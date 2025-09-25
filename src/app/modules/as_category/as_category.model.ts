@@ -20,7 +20,14 @@ const categorySchema = new mongoose.Schema<ICategory,CategoryModel>({
             enum: ["boolean", "plain"],
             required: true
         },
-    }]
+    }],
+    status: {
+        type: String,
+        enum: ["active", "deleted"],
+        default: "active"
+    }
+},{
+    timestamps: true
 })
 
 export const Category = mongoose.model<ICategory, CategoryModel>("Category", categorySchema)

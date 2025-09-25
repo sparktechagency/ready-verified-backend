@@ -18,7 +18,7 @@ passport.use(
         {
             clientID: config.google.client_id!,
             clientSecret: config.google.client_secret!,
-            callbackURL: `${config.url.base_url}/auth/google/callback`,
+            callbackURL: `${config.url.base_url}/api/v1/auth/google/callback`,
         },
         async function (accessToken, refreshToken, profile, done) {
             let user:any = await User.findOne({ email: profile.emails![0].value });
@@ -49,7 +49,7 @@ passport.use(
         {
             clientID: config.facebook.client_id!,
             clientSecret: config.facebook.client_secret!,
-            callbackURL: `${config.url.base_url}/auth/facebook/callback`,
+            callbackURL: `${config.url.base_url}/api/v1/auth/facebook/callback`,
         },
         function (accessToken, refreshToken, profile, done) {
             return done(null, profile);

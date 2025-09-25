@@ -6,8 +6,16 @@ import { getSingleFilePath } from "../../../shared/getFilePath";
 
 const createTemplate = catchAsync(async (req: Request, res: Response) => {
         const payload = req.body;
-        const image = getSingleFilePath(req.files, 'image');
-        payload.image = image
+        const image = getSingleFilePath(req.files, 'doc');
+        const thumbnail = getSingleFilePath(req.files, 'image');
+        payload.thumbnail = thumbnail
+
+        
+        
+        
+        payload.file = image
+        console.log(payload);
+        
         const result = await TemplateService.createTemplateIntoDB(payload);
     
         sendResponse(res, {
@@ -31,10 +39,16 @@ const getAllTemplates = catchAsync(async (req: Request, res: Response) => {
 });
 
 const updateTemplate = catchAsync(async (req: Request, res: Response) => {
-    const image = getSingleFilePath(req.files, 'image');
-    if (image) {
-        req.body.image = image
+    const image = getSingleFilePath(req.files, 'doc');
+    const thumbnail = getSingleFilePath(req.files, 'image');
+    if (thumbnail) {
+        req.body.thumbnail = thumbnail
     }
+    if (image) {
+        req.body.file = image
+    }
+    
+    
     const result = await TemplateService.updateTemplateToDB(req.params.id, req.body);
     sendResponse(res, {
         statusCode: 200,

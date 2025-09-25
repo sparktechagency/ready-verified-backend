@@ -3,6 +3,7 @@ import stripe from "../../../config/stripe";
 import ApiError from "../../../errors/ApiError";
 import { Package } from "../package/package.model";
 import { Subscription } from "./subscription.model";
+import config from "../../../config";
 
 const purchaseSubscriptionFromDB = async (id: string,user:JwtPayload) => {
 
@@ -22,8 +23,8 @@ const purchaseSubscriptionFromDB = async (id: string,user:JwtPayload) => {
         }
         ],
         customer_email:user.email,
-        success_url:"http://localhost:3000/subscription/success",
-        cancel_url:"http://localhost:3000/subscription/cancel"
+        success_url:`${config?.url?.client_url}/pricing/success`,
+        cancel_url:`${config?.url?.client_url}`
     })
 
     return session.url
@@ -31,7 +32,7 @@ const purchaseSubscriptionFromDB = async (id: string,user:JwtPayload) => {
 }
 
 const getUserSubscriptionFromDb = async (user:JwtPayload)=>{
-    const subscription = await Subscription.findOne({user:user.id}).populate("package")
+    const subscription = await Subscription.findOne({user:user.id,status:"active"}).populate("package")
     return subscription
 }
 

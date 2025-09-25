@@ -8,6 +8,9 @@ import { FaqRoutes } from '../app/modules/faq/faq.route';
 import { AsCategoryRoutes } from '../app/modules/as_category/as_category.route';
 import { AssessmentRoutes } from '../app/modules/assessment/assessment.route';
 import { TemplateRoutes } from '../app/modules/template/template.route';
+import { NotificationRoutes } from '../app/modules/notifcation/notifcation.route';
+import { DashboardRoutes } from '../app/modules/dashboard/dashboard.route';
+import { OrderRoutes } from '../app/modules/order/order.route';
 const router = express.Router();
 
 const apiRoutes = [
@@ -46,6 +49,18 @@ const apiRoutes = [
   {
     path:"/template",
     route:TemplateRoutes
+  },
+  {
+    path:"/notification",
+    route:NotificationRoutes
+  },
+  {
+    path:"/dashboard",
+    route:DashboardRoutes
+  },
+  {
+    path:"/order",
+    route:OrderRoutes
   }
 ];
 
