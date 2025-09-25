@@ -73,7 +73,7 @@ const updateProfileToDB = async (
   }
 
   //unlink file here
-  if (payload.image) {
+  if (payload.image && isExistUser.image && isExistUser.image !== payload.image) {
     unlinkFile(isExistUser.image);
   }
 
