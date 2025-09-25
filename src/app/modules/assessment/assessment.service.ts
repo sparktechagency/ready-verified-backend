@@ -223,7 +223,7 @@ const sendZoomMeetingLinkToAllAssessments = async () => {
   const assessments = await Assessment.find({
     status: ASSESSMENT_STATUS.APPROVED,
     isPaid: true,
-    // start_time: { $gte: currentTime, $lt: futureTime },
+    start_time: { $gte: currentTime, $lt: futureTime },
   }).lean();
 console.log(assessments);
 
