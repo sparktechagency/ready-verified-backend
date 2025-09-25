@@ -13,11 +13,14 @@ import { createCanvas } from 'canvas';
 
 import * as pdfjsLib from 'pdfjs-dist/legacy/build/pdf.mjs';
 
-export const generateCirtificate = async (data: IAssessment,mark?:number) => {
+export const generateCirtificate = async (data: IAssessment, mark?: number) => {
   try {
     const user = await User.findOne({ _id: data.user }).lean();
     const category = await Category.findOne({ _id: data.category }).lean();
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch({
+      headless: true,
+      args: ['--no-sandbox', '--disable-setuid-sandbox'],
+    });
     const page = await browser.newPage();
 
     const verificationCode = `candidate-${new Date().getFullYear()}-${new Date().getMonth()}-${new Date().getDate()}-${Math.floor(
@@ -26,7 +29,7 @@ export const generateCirtificate = async (data: IAssessment,mark?:number) => {
 
     // Your certificate HTML
     const html = getCirtificateTemplate({
-      userName:data?.personal_information?.name ?? '',
+      userName: data?.personal_information?.name ?? '',
       categoryName: category?.title ?? 'gaja',
       date: data.date,
       varification_id: verificationCode!,
@@ -58,7 +61,7 @@ export const generateCirtificate = async (data: IAssessment,mark?:number) => {
         status: ASSESSMENT_STATUS.COMPLETED,
         verificationCode: verificationCode,
         badge: result,
-        mark: mark
+        mark: mark,
       },
       { new: true }
     );
@@ -75,18 +78,15 @@ export const generateBadge = async (id: ObjectId) => {
     }
 
     // console.log(assessment)
-    const mark = assessment?.mark || 0
-    let badge = ASSESSMENT_BADGE.BRONZE
+    const mark = assessment?.mark || 0;
+    let badge = ASSESSMENT_BADGE.BRONZE;
 
-    if(mark >=0 && mark <=74){
-      badge = ASSESSMENT_BADGE.BRONZE
-    }
-    else if(mark >=75 && mark <=89){
-      badge = ASSESSMENT_BADGE.SILVER
-        
-    }
-    else if(mark >=90 && mark <=100){
-      badge = ASSESSMENT_BADGE.GOLD
+    if (mark >= 0 && mark <= 74) {
+      badge = ASSESSMENT_BADGE.BRONZE;
+    } else if (mark >= 75 && mark <= 89) {
+      badge = ASSESSMENT_BADGE.SILVER;
+    } else if (mark >= 90 && mark <= 100) {
+      badge = ASSESSMENT_BADGE.GOLD;
     }
     if (!badge) {
       return;
@@ -105,7 +105,10 @@ export const generateBadge = async (id: ObjectId) => {
       )}`,
     });
 
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch({
+      headless: true,
+      args: ['--no-sandbox', '--disable-setuid-sandbox'],
+    });
     const page = await browser.newPage();
 
     await page.setContent(html, { waitUntil: 'networkidle0' });
@@ -136,7 +139,7 @@ export const convertPdfToImage = async (pdfPath: string): Promise<string[]> => {
   try {
     const filePath = path.join(process.cwd(), 'uploads', pdfPath);
     console.log(filePath);
-    
+
     const saveDir = path.join(process.cwd(), 'uploads', 'image');
 
     // Make sure the folder exists
@@ -156,7 +159,7 @@ export const convertPdfToImage = async (pdfPath: string): Promise<string[]> => {
 
       // Render PDF page onto canvas
 
-      await page.render({canvas:canvas as any, viewport }).promise;
+      await page.render({ canvas: canvas as any, viewport }).promise;
 
       const savePath = path.join(saveDir, `page-${i}-${Date.now()}.png`);
       fs.writeFileSync(savePath, canvas.toBuffer('image/png'));
