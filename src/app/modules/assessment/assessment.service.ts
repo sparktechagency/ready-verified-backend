@@ -225,6 +225,7 @@ const sendZoomMeetingLinkToAllAssessments = async () => {
     isPaid: true,
     start_time: { $gte: currentTime, $lt: futureTime },
   }).lean();
+console.log(assessments);
 
   if (!assessments.length) {
     return;
