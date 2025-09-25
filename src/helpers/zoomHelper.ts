@@ -6,17 +6,18 @@ export const generateZoomLink = async () => {
   try {
     const token = await getAccessToken();
 
-    const meetingConfig = {
-      topic: 'Client Meeting',
-      type: 1, // Instant meeting
-      settings: {
-        host_video: true,
-        participant_video: true,
-        join_before_host: true, // Optional: allow joining before host
-        password: '',           // No password
-        enforce_login: false,   // Anyone can join
-      },
-    };
+  const meetingConfig = {
+  topic: 'Client Interview Meeting',
+  type: 2, // Scheduled meeting
+  start_time: new Date().toISOString(), // schedule it now
+  settings: {
+    host_video: true,
+    participant_video: true,
+    join_before_host: true,
+    password: '', 
+    enforce_login: false,
+  },
+};
 
     const response = await axios.post(
       'https://api.zoom.us/v2/users/me/meetings',
