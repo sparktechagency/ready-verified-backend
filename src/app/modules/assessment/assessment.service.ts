@@ -217,21 +217,34 @@ const changeStatusIntoDB = async (
 };
 
 const sendZoomMeetingLinkToAllAssessments = async () => {
-  const accualMinitues = new Date().getMinutes();
-  const currentTime = new Date(new Date().getTime()-accualMinitues*60*1000);
-  // 30 min later time
+  // Current UTC time
+  const now = new Date();
+
+  // Round down to the start of the current minute (UTC)
+  const currentTime = new Date(Date.UTC(
+    now.getUTCFullYear(),
+    now.getUTCMonth(),
+    now.getUTCDate(),
+    now.getUTCHours(),
+    now.getUTCMinutes(), // minutes
+    0,                   // seconds
+    0                    // ms
+  ));
+
+  // 30 minutes later (UTC)
   const futureTime = new Date(currentTime.getTime() + 30 * 60 * 1000);
+
   const assessments = await Assessment.find({
     status: ASSESSMENT_STATUS.APPROVED,
     isPaid: true,
-    // select those assessment start_time is less than 30 min later time and greater than current time
-    start_time: { $lt: futureTime, $gte: currentTime },
+    start_time: { $lt: futureTime, $gte: currentTime }, // strictly between now and +30min
   }).lean();
-console.log(assessments);
 
-  if (!assessments.length) {
-    return;
-  }
+  console.log("Current UTC:", currentTime.toISOString());
+  console.log("Future UTC:", futureTime.toISOString());
+  console.log("Assessments:", assessments);
+
+  if (!assessments.length) return;
 
   for (const assessment of assessments) {
     const link = await generateZoomLink();
@@ -247,16 +260,19 @@ console.log(assessments);
       email: user?.email!,
       zoomLink: link,
     });
+
     await emailHelper.sendEmail(template);
+
     await sendNotification({
       title: `${user?.name} is scheduled for an interview`,
-      message: `${user?.name} is waitng for an interview. Please check your dashboard to join the interview.`,
-      path: 'assessment',
+      message: `${user?.name} is waiting for an interview. Please check your dashboard to join.`,
+      path: "assessment",
       recievers: [],
       refernceId: assessment._id,
     });
   }
 };
+
 
 
 const cirtificateVerificationUrl = async (id: string) => {
