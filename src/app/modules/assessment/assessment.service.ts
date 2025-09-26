@@ -217,14 +217,15 @@ const changeStatusIntoDB = async (
 };
 
 const sendZoomMeetingLinkToAllAssessments = async () => {
-  const currentTime = new Date(new Date().getTime()-2*60*1000);
+  const accualMinitues = new Date().getMinutes();
+  const currentTime = new Date(new Date().getTime()-accualMinitues*60*1000);
   // 30 min later time
   const futureTime = new Date(currentTime.getTime() + 30 * 60 * 1000);
   const assessments = await Assessment.find({
     status: ASSESSMENT_STATUS.APPROVED,
     isPaid: true,
     // select those assessment start_time is less than 30 min later time and greater than current time
-    start_time: { $lt: futureTime, $gt: currentTime },
+    start_time: { $lt: futureTime, $gte: currentTime },
   }).lean();
 console.log(assessments);
 
